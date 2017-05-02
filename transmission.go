@@ -36,7 +36,9 @@ func BtDown (hash string) (string){
       var stemp string
       if err != nil{
          stemp = "Error!\n\n" + err.Error()
-      }else{
+      }else if torrent.Name == ""{
+         stemp = "Error!\n\nYou don't have permission to download this torrent. Try manually, but you will probably need to be logged in."
+         }else{
          stemp = "Success!\n\nAdded: " + torrent.Name + "\nID: " + strconv.Itoa(torrent.ID)
       }
    return stemp
