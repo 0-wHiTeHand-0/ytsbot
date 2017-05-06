@@ -99,6 +99,13 @@ func handle_updates(bot *tgbotapi.BotAPI, update tgbotapi.Update, cfg config) {
 						return
 				 }
 				 msg = tgbotapi.NewMessage(update.Message.Chat.ID, m)
+			}else if Commandssl.Transmission.St_clean == update.Message.Text{
+				 m, err := BtClean()
+				 if err != nil{
+						log.Println(err)
+						return
+				 }
+				 msg = tgbotapi.NewMessage(update.Message.Chat.ID, m)
 			}else if Commandssl.Transmission.Reg_del.MatchString(update.Message.Text){
 				 m, err := BtRemove(update.Message.Text)
 				 if err != nil{

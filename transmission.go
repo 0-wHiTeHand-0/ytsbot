@@ -18,14 +18,16 @@ const (
 )
 
 type CmdConfigTransmission struct {
-	 St_list        string
-	 Reg_del      *regexp.Regexp
+	 St_list    string
+    St_clean   string
+	 Reg_del    *regexp.Regexp
 }
 
 var bt_client  transmission.TransmissionClient
 
 func NewCmdTransmission(config *CmdConfigTransmission, url string, user string, pass string) {
 	 config.St_list = "/bt_list"
+    config.St_clean = "/bt_clean"
 	 config.Reg_del = regexp.MustCompile(`^/bt_del [0-9]+$`)
 	 bt_client = transmission.New(url, user, pass)
 }
@@ -89,7 +91,6 @@ func BtStatus (t *transmission.Torrent) string {
 	 default:
 			return "unknown"
 	 }
-
 }
 
 func BtRemove(a string) (string, error){
@@ -103,4 +104,22 @@ func BtRemove(a string) (string, error){
 	 }
 	 d, err := bt_client.RemoveTorrent(c, true)//Removes the torrent AND the file
 	 return d, err
+}
+
+func BtClean() (string, error){//Removes complete torrents from the list (not the data)
+	 torrents, err := bt_client.GetTorrents()
+	 if err != nil{
+			return "", err
+	 }
+    res := "<--- Removed torrents --->\n"
+	 for _, torrent := range torrents{
+       if torrent.PercentDone == 1{
+          _, err := bt_client.RemoveTorrent(torrent.ID, false)
+          if err != nil{
+             return "", err
+          }
+          res += "\n- " + torrent.Name
+       }
+    }
+    return res, nil
 }
