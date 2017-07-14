@@ -128,6 +128,7 @@ func YtsSearch(a string) (string, error) {
 func YtsDetail(a string) (string,string,string,error){
 	 type torrent struct{
 			Hash   string  `json:"hash"`
+			Quality	string `json:"quality"`
 	 }
 	 type movie struct{
 			ID    int      `json:"id"`
@@ -176,11 +177,15 @@ func YtsDetail(a string) (string,string,string,error){
 			return "", "No movie found with this ID", "", nil
 	 }
 	 var s_torrent string
-	 if len(respData.Data.Movie.Torrents) > 1{
-			s_torrent = respData.Data.Movie.Torrents[1].Hash
-	 }else{
-			s_torrent = respData.Data.Movie.Torrents[0].Hash
-	 }
+	for tmp_torrent := range respData.Data.Movie.Torrents{
+		if tmp_torrent.Quality == "1080p"{
+			s_torrent = tmp_torrent.Hash
+			break
+		}
+		if tmp_torrent.Quality == "720p"{
+			s_torrent = tmp_torrent.Hash
+		}
+	}
 	 s_genres := ": "
 	 for _, i := range respData.Data.Movie.Genres{
 			s_genres += i + ", "
