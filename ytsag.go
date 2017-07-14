@@ -177,15 +177,15 @@ func YtsDetail(a string) (string,string,string,error){
 			return "", "No movie found with this ID", "", nil
 	 }
 	 var s_torrent string
-	for tmp_torrent := range respData.Data.Movie.Torrents{
-		if tmp_torrent.Quality == "1080p"{
-			s_torrent = tmp_torrent.Hash
-			break
-		}
-		if tmp_torrent.Quality == "720p"{
-			s_torrent = tmp_torrent.Hash
-		}
-	}
+	 for _, tmp_torrent := range respData.Data.Movie.Torrents{
+			if tmp_torrent.Quality == "1080p"{
+				 s_torrent = tmp_torrent.Hash
+				 break
+			}
+			if tmp_torrent.Quality == "720p"{
+				 s_torrent = tmp_torrent.Hash
+			}
+	 }
 	 s_genres := ": "
 	 for _, i := range respData.Data.Movie.Genres{
 			s_genres += i + ", "
